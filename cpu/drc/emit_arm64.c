@@ -336,7 +336,7 @@ enum { AM_IDX, AM_IDXPOST, AM_IDXREG, AM_IDXPRE };
 // XXX: tcache_ptr type for SVP and SH2 compilers differs..
 #define EMIT_PTR(ptr, x) \
 	do { \
-		*(u32 *)(ptr) = x; \
+		*(u32 *)DRC_RW(ptr) = x; \
 		ptr = (void *)((u8 *)(ptr) + sizeof(u32)); \
 	} while (0)
 
@@ -1118,8 +1118,17 @@ static void emith_ldst_offs(int sz, int rd, int rn, int o9, int ld, int mode)
 #define emith_pool_commit(j)	/**/
 #define emith_insn_ptr()	((u8 *)tcache_ptr)
 #define	emith_flush()		/**/
+#if defined(__SWITCH__)
+// written through the alias: clean it, and drop stale code from tcache's
+// side every time (the two views share no cache lines by address)
+#define host_instructions_updated(base, end, force) do { \
+	armDCacheFlush(DRC_RW(base), (u8 *)(end) - (u8 *)(base)); \
+	armICacheInvalidate((void *)(base), (u8 *)(end) - (u8 *)(base)); \
+} while (0)
+#else
 #define host_instructions_updated(base, end, force) \
 	do { if (force) __builtin___clear_cache(base, end); } while (0)
+#endif
 #define	emith_update_cache()	/**/
 #define emith_rw_offs_max()	0x1ff
 #define emith_uext_ptr(r)	/**/

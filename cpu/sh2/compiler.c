@@ -858,12 +858,12 @@ static void dr_block_unlink(struct block_link *bl, int emit_jump)
         emith_jump_patch(jump, sh2_drc_dispatcher, &jump);
       } else if (bl->type == BL_LDJMP) { // restore: load pc, jump @dispatcher
         // inlined: @jump load target_pc, far jump to dispatcher
-        memcpy(jump, bl->jdisp, emith_jump_at_size());
+        memcpy(DRC_RW(jump), bl->jdisp, emith_jump_at_size());
         jsz = emith_jump_at_size();
       } else if (bl->type == BL_JCCBLX) { // jump cond @blx; @blx: load pc, jump
         // via blx: @jump near jumpcc to blx; @blx load target_pc, far jump
         emith_jump_patch(bl->jump, bl->blx, &jump);
-        memcpy(bl->blx, bl->jdisp, emith_jump_at_size());
+        memcpy(DRC_RW(bl->blx), bl->jdisp, emith_jump_at_size());
         host_instructions_updated(bl->blx, (char *)bl->blx + emith_jump_at_size(), 1);
       } else {
         printf("unknown BL type %d\n", bl->type);

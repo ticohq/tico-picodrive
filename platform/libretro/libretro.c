@@ -15,6 +15,9 @@
 #include <stdarg.h>
 #include <string.h>
 #include <errno.h>
+#ifdef __SWITCH__
+#include <malloc.h> /* memalign, for plat_mmap */
+#endif
 #ifdef __MACH__
 #include <libkern/OSCacheControl.h>
 #endif
@@ -416,6 +419,36 @@ void plat_munmap(void *ptr, size_t size)
    free(ptr);
 }
 
+#elif defined(__SWITCH__)
+/* Horizon has no anonymous mmap, and NVK brings a munmap of its own for its
+ * mappings: page-aligned heap memory instead. None of the callers needs a
+ * fixed address. */
+void *plat_mmap(unsigned long addr, size_t size, int need_exec, int is_fixed)
+{
+   void *ret = memalign(0x1000, size);
+   (void)addr; (void)need_exec; (void)is_fixed;
+   if (ret != NULL)
+      memset(ret, 0, size);
+   return ret;
+}
+
+void *plat_mremap(void *ptr, size_t oldsize, size_t newsize)
+{
+   void *ret = memalign(0x1000, newsize);
+   if (ret == NULL)
+      return NULL;
+   memcpy(ret, ptr, oldsize < newsize ? oldsize : newsize);
+   if (newsize > oldsize)
+      memset((char *)ret + oldsize, 0, newsize - oldsize);
+   free(ptr);
+   return ret;
+}
+
+void plat_munmap(void *ptr, size_t size)
+{
+   (void)size;
+   free(ptr);
+}
 #else
 void *plat_mmap(unsigned long addr, size_t size, int need_exec, int is_fixed)
 {
@@ -530,6 +563,10 @@ int plat_mem_set_exec(void *ptr, size_t size)
 
 #elif defined(VITA)
    ret = sceKernelOpenVMDomain();
+#elif defined(__SWITCH__)
+   /* the dynarec's code cache is executable already (cpu/drc/cmn.c) */
+   (void)ptr; (void)size;
+   ret = 0;
 #else
    ret = mprotect(ptr, size, PROT_READ | PROT_WRITE | PROT_EXEC);
    if (ret != 0 && log_cb)
@@ -2004,6 +2041,13 @@ static void update_variables(bool first_run)
 #ifdef _3DS
    if(!ctr_svchack_successful)
       PicoIn.opt &= ~POPT_EN_DRC;
+#endif
+#if defined(__SWITCH__) && defined(DRC_SH2)
+   {
+      extern int drc_unavailable; /* cpu/drc/cmn.c */
+      if (drc_unavailable)
+         PicoIn.opt &= ~POPT_EN_DRC;
+   }
 #endif
 
    var.value = NULL;

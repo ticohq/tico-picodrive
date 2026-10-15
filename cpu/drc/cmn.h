@@ -3,6 +3,22 @@
 
 extern u8 *tcache;
 
+#if defined(__SWITCH__) && defined(__aarch64__)
+// Horizon has no RWX pages: tcache runs from .text, where it is executable,
+// and code is written through a writable alias of it mapped elsewhere
+// (cmn.c). Every store into tcache goes through DRC_RW; the caches are then
+// cleaned on the alias and invalidated on tcache itself.
+#include <stddef.h>
+extern ptrdiff_t drc_rw_offset;
+// set when no writable view could be mapped: the interpreter runs instead
+extern int drc_unavailable;
+#define DRC_RW(p) ((void *)((u8 *)(p) + drc_rw_offset))
+void armDCacheFlush(void *addr, size_t size);
+void armICacheInvalidate(void *addr, size_t size);
+#else
+#define DRC_RW(p) ((void *)(p))
+#endif
+
 void drc_cmn_init(void);
 void drc_cmn_cleanup(void);
 
