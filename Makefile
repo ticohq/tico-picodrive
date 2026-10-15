@@ -259,7 +259,8 @@ endif
 ifeq "$(PLATFORM)" "libretro"
 OBJS += platform/libretro/libretro.o
 OBJS += platform/libretro/libretro-common/compat/compat_strcasestr.o
-ifneq ($(STATIC_LINKING), 1)
+# Upstream leaves these out of static builds because RetroArch exports them;
+# tico is the frontend here and provides none, so they are always in.
 CFLAGS += -DHAVE_ZLIB
 OBJS += platform/libretro/libretro-common/formats/png/rpng.o
 OBJS += platform/libretro/libretro-common/streams/trans_stream.o
@@ -278,9 +279,10 @@ OBJS += platform/libretro/libretro-common/compat/fopen_utf8.o
 OBJS += platform/libretro/libretro-common/streams/file_stream.o
 OBJS += platform/libretro/libretro-common/streams/file_stream_transforms.o
 endif
-endif
+# mmap shims, which the Switch has no use for (libretro.c allocates from the
+# heap there) and whose munmap NVK's libvulkan.a defines too
 ifeq "$(USE_LIBRETRO_VFS)" "1"
-ifneq ($(STATIC_LINKING), 1)
+ifneq ($(platform), libnx)
 OBJS += platform/libretro/libretro-common/memmap/memmap.o
 endif
 endif

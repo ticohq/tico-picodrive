@@ -37,3 +37,19 @@ PicoDrive*.zip
 pico_int_offs.h
 amalgamate
 textfilter
+
+# tico
+.vscode
+build_tico
+.DS_Store
+build_glslang_nx/
+build_desktop/
+/shaders
+/cache/
+tico/config/
+/imgui.ini
+# prebuilt libusbhsfs + read-only NTFS (usbntfs), see tico/deps/usbhsfs
+!tico/deps/usbhsfs/lib/*.a
+build.log
+# TicoSecure build secret (shared with tico)
+/tico/TicoSecret.h

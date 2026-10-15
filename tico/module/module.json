@@ -1,0 +1,32 @@
+{
+  "id": "picodrive",
+  "name": "PicoDrive",
+  "nro": "tico-picodrive.nro",
+  "launch": "\"{nro}\" \"{slug}\" \"{rom}\" \"{title}\"",
+  "settings": "config/modules/picodrive/settings.json",
+  "config_file": "picodrive.jsonc",
+  "system_dir": "picodrive",
+  "is_libretro": true,
+  "achievements": true,
+  "systems": [
+    {
+      "slug": "sega-32x",
+      "title": "Sega 32X",
+      "short_title": "32X",
+      "extensions": [
+        ".32x",
+        ".zip",
+        ".7z",
+        ".rar"
+      ],
+      "games_file": "sega-32x.dat",
+      "retroachievements_id": 10,
+      "colors": {
+        "start": "E6B85F",
+        "end": "E65F5F",
+        "start_dark": "A8823F",
+        "end_dark": "A83F3F"
+      }
+    }
+  ]
+}
