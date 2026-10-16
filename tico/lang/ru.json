@@ -164,5 +164,6 @@
     "settings_picodrive_value_top_right": "Сверху справа",
     "settings_picodrive_value_unlimited": "Без ограничений",
     "settings_picodrive_value_up": "Вверх",
-    "settings_picodrive_value_us": "США"
+    "settings_picodrive_value_us": "США",
+    "emulator_quick_menu_tip": "Нажмите {plus} и {minus} вместе, чтобы открыть быстрое меню"
 }

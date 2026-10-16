@@ -165,5 +165,6 @@
     "settings_picodrive_value_top_right": "En haut à droite",
     "settings_picodrive_value_unlimited": "Illimité",
     "settings_picodrive_value_up": "Haut",
-    "settings_picodrive_value_us": "États-Unis"
+    "settings_picodrive_value_us": "États-Unis",
+    "emulator_quick_menu_tip": "Appuyez sur {plus} et {minus} ensemble pour ouvrir le menu rapide"
 }

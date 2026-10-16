@@ -129,5 +129,6 @@
     "settings_picodrive_tab_display": "Display",
     "settings_picodrive_tab_hacks": "Hacks",
     "settings_picodrive_tab_system": "System",
-    "settings_picodrive_tab_video": "Video"
+    "settings_picodrive_tab_video": "Video",
+    "emulator_quick_menu_tip": "Press {plus} and {minus} together to open the quick menu"
 }
