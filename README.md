@@ -27,6 +27,16 @@ It adds:
 
 ----------
 
+## Credits
+
+This fork is built on top of the libretro port of PicoDrive, by notaz.
+All core emulation work belongs to the PicoDrive authors and contributors.
+
+- **Official PicoDrive repository** — https://github.com/notaz/picodrive
+- **libretro PicoDrive** — https://github.com/libretro/picodrive
+
+----------
+
 ## A Note
 
 A lot of work in this scene disappears over time — not because it lacked value, but because it was never shared.
